@@ -5,6 +5,9 @@ import { Book } from "./models/bookModel.js";
 
 const app = express();
 
+// For enabling json requests
+app.use(express.json());
+
 app.get('/', (request, response)=>{
     console.log(request);
     return response.status(200).send('Welcome to MERN Stack Tutorial');  
@@ -34,10 +37,36 @@ app.post('/books', async (request, response) => {
         return response.status(200).send(book);
     } catch(error) {
         console.log(error.message);
-        response.status(500).send({ message: error.message });
+        return response.status(500).send({ message: error.message });
     }
 });
 
+
+// Route for getting all the books
+app.get('/books', async (request, response) => {
+    try {
+        const books = await Book.find({});
+
+        return response.status(200).json(books);
+    } catch(error) {
+        console.log(error);
+        return response.status(500).send({ message: error.message });
+    }
+});
+
+// Route for getting books by id 
+app.get('books/:id', async (request, response) => {
+    try {
+        const {id} = request.params;
+
+        const book = await Book.find({id});
+
+        
+    } catch(error) {
+        console.log(error);
+        return response.status(500).send({message: error.message});
+    }
+});
 
 mongoose
     .connect(mongoDBURL)
